@@ -217,21 +217,22 @@ margin: 0 auto 20px;
 
 <div class="card">
 <h2>Parametri Campagna</h2>
-<div class="grid" style="grid-template-columns: repeat(3, 1fr); gap: 30px; align-items: start;">
-    <div class="form-group" style="margin-bottom: 0;">
-        <label for="targetSize">Dimensione Target (persone)</label>
-        <input type="text" id="targetSize" value="1.000.000" oninput="formatNumberInput(this)">
-    </div>
-    
-    <div class="form-group" style="margin-bottom: 0;">
-        <label for="budget">Budget (€)</label>
-        <input type="text" id="budget" value="50.000" oninput="formatNumberInput(this)">
-    </div>
-    
-    <div class="form-group" style="margin-bottom: 0;">
-        <label for="cpm">CPM (€)</label>
-        <input type="number" id="cpm" min="1" value="25">
-    </div>
+<table style="width: 100%; border-collapse: separate; border-spacing: 20px 0;">
+    <tr>
+        <td style="width: 33.33%; padding: 0;">
+            <label for="targetSize">Dimensione Target (persone)</label>
+            <input type="text" id="targetSize" value="1.000.000" oninput="formatNumberInput(this)">
+        </td>
+        <td style="width: 33.33%; padding: 0;">
+            <label for="budget">Budget (€)</label>
+            <input type="text" id="budget" value="50.000" oninput="formatNumberInput(this)">
+        </td>
+        <td style="width: 33.33%; padding: 0;">
+            <label for="cpm">CPM (€)</label>
+            <input type="text" id="cpm" value="25" oninput="validateNumber(this)">
+        </td>
+    </tr>
+</table>
 </div>
 
 <div style="text-align: center; margin-top: 20px;">
@@ -309,6 +310,11 @@ margin: 0 auto 20px;
 </div>
 
 <script>
+// Funzione per validare solo numeri in un campo
+function validateNumber(input) {
+input.value = input.value.replace(/[^\d]/g, '');
+}
+
 // Funzione per formattare i numeri con i separatori delle migliaia
 function formatNumberInput(input) {
 // Rimuovi tutti i caratteri non numerici
