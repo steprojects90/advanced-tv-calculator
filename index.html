@@ -1,594 +1,595 @@
-// Inizializza gli input formattati
-            formatNumberInput(targetSizeInput);
-            formatNumberInput(budgetInput);<!DOCTYPE html>
+<!-- Campi nascosti -->
+<div style="display: none;">
+    <input type="number" id="campaignDays" min="1" max="180" value="30">
+    <input type="number" id="channelPotential" min="1" max="100" value="80">
+</div>            // Inizializza gli input formattati
+formatNumberInput(targetSizeInput);
+formatNumberInput(budgetInput);<!DOCTYPE html>
 <html lang="it">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calcolatore Reach Campagna Advanced TV</title>
-    <style>
-        :root {
-            --primary-color: #2563eb;
-            --primary-light: #dbeafe;
-            --success-color: #059669;
-            --success-light: #d1fae5;
-            --warning-color: #d97706;
-            --warning-light: #fef3c7;
-            --dark-color: #1f2937;
-            --gray-color: #6b7280;
-            --light-color: #f3f4f6;
-            --white-color: #ffffff;
-        }
-        
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            line-height: 1.6;
-            color: var(--dark-color);
-            margin: 0;
-            padding: 20px;
-            background-color: var(--light-color);
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        h1 {
-            color: var(--primary-color);
-            margin-bottom: 20px;
-            font-weight: 700;
-        }
-        
-        h2 {
-            color: var(--dark-color);
-            margin-bottom: 15px;
-            font-weight: 600;
-        }
-        
-        .card {
-            background-color: var(--white-color);
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-        
-        .form-group {
-            margin-bottom: 15px;
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 500;
-            font-size: 0.9rem;
-        }
-        
-        input[type="number"] {
-            width: 100%;
-            padding: 8px 12px;
-            border: 1px solid #d1d5db;
-            border-radius: 4px;
-            font-size: 1rem;
-        }
-        
-        .help-text {
-            font-size: 0.8rem;
-            color: var(--gray-color);
-            margin-top: 4px;
-        }
-        
-        .btn {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 4px;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-        
-        .btn:hover {
-            background-color: #1d4ed8;
-        }
-        
-        .btn-block {
-            display: block;
-            width: 100%;
-        }
-        
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-        }
-        
-        .result-box {
-            padding: 15px;
-            border-radius: 4px;
-            text-align: center;
-        }
-        
-        .result-box p:first-child {
-            margin-top: 0;
-            font-size: 0.9rem;
-            color: var(--dark-color);
-        }
-        
-        .result-box p:last-child {
-            margin-bottom: 0;
-            font-size: 1.5rem;
-            font-weight: 700;
-        }
-        
-        .bg-primary-light {
-            background-color: var(--primary-light);
-        }
-        
-        .bg-success-light {
-            background-color: var(--success-light);
-        }
-        
-        .bg-warning-light {
-            background-color: var(--warning-light);
-        }
-        
-        .text-primary {
-            color: var(--primary-color);
-        }
-        
-        .text-success {
-            color: var(--success-color);
-        }
-        
-        .text-warning {
-            color: var(--warning-color);
-        }
-        
-        .list {
-            padding-left: 20px;
-        }
-        
-        .canvas-container {
-            width: 100%;
-            height: 300px;
-            position: relative;
-        }
-        
-        @media (max-width: 768px) {
-            .grid {
-                grid-template-columns: 1fr;
-            }
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calcolatore Reach Campagna Advanced TV</title>
+<style>
+:root {
+--primary-color: #2563eb;
+--primary-light: #dbeafe;
+--success-color: #059669;
+--success-light: #d1fae5;
+--warning-color: #d97706;
+--warning-light: #fef3c7;
+--dark-color: #1f2937;
+--gray-color: #6b7280;
+--light-color: #f3f4f6;
+--white-color: #ffffff;
+}
 
-        /* Loading indicator */
-        .loading {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(255, 255, 255, 0.8);
-            z-index: 1000;
-            text-align: center;
-        }
-        
-        .loading-content {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
-        
-        .spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid var(--primary-color);
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-    </style>
+body {
+font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+line-height: 1.6;
+color: var(--dark-color);
+margin: 0;
+padding: 20px;
+background-color: var(--light-color);
+}
+
+.container {
+max-width: 1200px;
+margin: 0 auto;
+}
+
+h1 {
+color: var(--primary-color);
+margin-bottom: 20px;
+font-weight: 700;
+}
+
+h2 {
+color: var(--dark-color);
+margin-bottom: 15px;
+font-weight: 600;
+}
+
+.card {
+background-color: var(--white-color);
+border-radius: 8px;
+box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+padding: 20px;
+margin-bottom: 20px;
+}
+
+.form-group {
+margin-bottom: 15px;
+}
+
+label {
+display: block;
+margin-bottom: 5px;
+font-weight: 500;
+font-size: 0.9rem;
+}
+
+input[type="number"] {
+width: 100%;
+padding: 8px 12px;
+border: 1px solid #d1d5db;
+border-radius: 4px;
+font-size: 1rem;
+}
+
+.help-text {
+font-size: 0.8rem;
+color: var(--gray-color);
+margin-top: 4px;
+}
+
+.btn {
+background-color: #2563eb;
+color: white;
+border: none;
+padding: 12px 20px;
+border-radius: 6px;
+font-size: 1rem;
+font-weight: 500;
+cursor: pointer;
+transition: background-color 0.2s, transform 0.1s;
+box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.btn:hover {
+background-color: #1d4ed8;
+box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btn:active {
+transform: translateY(1px);
+box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.btn-block {
+display: block;
+width: 100%;
+}
+
+.grid {
+display: grid;
+grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+gap: 20px;
+}
+
+.result-box {
+padding: 15px;
+border-radius: 4px;
+text-align: center;
+}
+
+.result-box p:first-child {
+margin-top: 0;
+font-size: 0.9rem;
+color: var(--dark-color);
+}
+
+.result-box p:last-child {
+margin-bottom: 0;
+font-size: 1.5rem;
+font-weight: 700;
+}
+
+.bg-primary-light {
+background-color: var(--primary-light);
+}
+
+.bg-success-light {
+background-color: var(--success-light);
+}
+
+.bg-warning-light {
+background-color: var(--warning-light);
+}
+
+.text-primary {
+color: var(--primary-color);
+}
+
+.text-success {
+color: var(--success-color);
+}
+
+.text-warning {
+color: var(--warning-color);
+}
+
+.list {
+padding-left: 20px;
+}
+
+.canvas-container {
+width: 100%;
+height: 300px;
+position: relative;
+}
+
+@media (max-width: 768px) {
+.grid {
+    grid-template-columns: 1fr;
+}
+}
+
+/* Loading indicator */
+.loading {
+display: none;
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background-color: rgba(255, 255, 255, 0.8);
+z-index: 1000;
+text-align: center;
+}
+
+.loading-content {
+position: absolute;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+}
+
+.spinner {
+border: 4px solid #f3f3f3;
+border-top: 4px solid var(--primary-color);
+border-radius: 50%;
+width: 40px;
+height: 40px;
+animation: spin 1s linear infinite;
+margin: 0 auto 20px;
+}
+
+@keyframes spin {
+0% { transform: rotate(0deg); }
+100% { transform: rotate(360deg); }
+}
+</style>
 </head>
 <body>
-    <div class="container">
-        <h1>Calcolatore Reach Campagna Advanced TV</h1>
-        
-        <div class="card">
-            <h2>Parametri Campagna</h2>
-            <div class="grid">
-                <div class="form-group">
-                    <label for="targetSize">Dimensione Target (persone)</label>
-                    <input type="text" id="targetSize" value="1.000.000" oninput="formatNumberInput(this)">
-                </div>
-                
-                <div class="form-group" style="display: none;">
-                    <label for="campaignDays">Durata Campagna (giorni)</label>
-                    <input type="number" id="campaignDays" min="1" max="180" value="30">
-                </div>
-                
-                <div class="form-group">
-                    <label for="budget">Budget (€)</label>
-                    <input type="text" id="budget" value="50.000" oninput="formatNumberInput(this)">
-                </div>
-                
-                <div class="form-group">
-                    <label for="cpm">CPM (€)</label>
-                    <input type="number" id="cpm" min="1" value="25">
-                </div>
-                
-                <div class="form-group" style="display: none;">
-                    <label for="channelPotential">Potenziale del Canale (%)</label>
-                    <input type="number" id="channelPotential" min="1" max="100" value="80">
-                    <p class="help-text">Percentuale massima del target raggiungibile</p>
-                </div>
-            </div>
-            
-            <div style="text-align: center; margin-top: 20px;">
-                <button id="calculateBtn" class="btn" style="width: 200px;">Calcola</button>
-            </div>
-        </div>
-        
-        <div class="card">
-            <h2>Risultati Stimati</h2>
-            <div class="grid">
-                <div class="result-box bg-primary-light">
-                    <p class="text-primary">Impressioni Totali</p>
-                    <p id="impressionsResult">-</p>
-                </div>
-                
-                <div class="result-box bg-primary-light">
-                    <p class="text-primary">GRP</p>
-                    <p id="grpResult">-</p>
-                </div>
-                
-                <div class="result-box bg-success-light">
-                    <p class="text-success">Reach Stimata</p>
-                    <p id="reachResult">-</p>
-                </div>
-                
-                <div class="result-box bg-success-light">
-                    <p class="text-success">Reach (% on Devices)</p>
-                    <p id="reachPercentageResult">-</p>
-                </div>
-                
-                <div class="result-box bg-success-light">
-                    <p class="text-success">Reach (% on Users)</p>
-                    <p id="reachUsersPercentageResult">-</p>
-                </div>
-                
-                <div class="result-box bg-warning-light">
-                    <p class="text-warning">Frequenza Media</p>
-                    <p id="frequencyResult">-</p>
-                </div>
-                
-                <div class="result-box bg-warning-light">
-                    <p class="text-warning">Costo per Reach Point</p>
-                    <p id="costPerReachResult">-</p>
-                </div>
-            </div>
-        </div>
-        
-        <div class="card">
-            <h2>Curva di Reach</h2>
-            <div class="canvas-container">
-                <canvas id="reachCurveCanvas"></canvas>
-            </div>
-        </div>
-        
-        
-        <div class="card">
-            <h2>Note sul Modello di Calcolo</h2>
-            <p>Questo calcolatore utilizza le formule standard dell'anatomia delle curve di reach:</p>
-            <ul class="list">
-                <li>Formula fondamentale della reach: r = (pg)/(g+p) dove r è la reach, p è il potenziale del canale e g sono i GRP</li>
-                <li>Reach a frequenza f o superiore: r_f = p * (g/(g+p))^f</li>
-                <li>Frequenza media: f = g/r</li>
-            </ul>
-            <p>Il parametro "Potenziale del Canale" rappresenta la massima percentuale del target che può essere raggiunta dal canale, anche con un numero infinito di GRP. È una caratteristica intrinseca del canale e della sua capacità di raggiungere il target.</p>
-            <p>La "Reach (% on Users)" applica un fattore moltiplicatore di 1,40 alla Reach su device per riflettere la natura "one-to-many" dell'Advanced TV, considerando che davanti a un singolo schermo possono esserci più spettatori.</p>
-        </div>
+<div class="container">
+<h1>Calcolatore Reach Campagna Advanced TV</h1>
+
+<div class="card">
+<h2>Parametri Campagna</h2>
+<div class="grid" style="grid-template-columns: repeat(3, 1fr);">
+    <div class="form-group">
+        <label for="targetSize">Dimensione Target (persone)</label>
+        <input type="text" id="targetSize" value="1.000.000" oninput="formatNumberInput(this)">
     </div>
-
-    <!-- Loading spinner -->
-    <div id="loading" class="loading">
-        <div class="loading-content">
-            <div class="spinner"></div>
-            <p>Elaborazione in corso...</p>
-        </div>
+    
+    <div class="form-group">
+        <label for="budget">Budget (€)</label>
+        <input type="text" id="budget" value="50.000" oninput="formatNumberInput(this)">
     </div>
+    
+    <div class="form-group">
+        <label for="cpm">CPM (€)</label>
+        <input type="number" id="cpm" min="1" value="25">
+    </div>
+</div>
 
-    <script>
-        // Funzione per formattare i numeri con i separatori delle migliaia
-        function formatNumberInput(input) {
-            // Rimuovi tutti i caratteri non numerici
-            let value = input.value.replace(/\D/g, '');
-            
-            // Verifica che ci sia un valore
-            if (value) {
-                // Formatta il numero con i separatori delle migliaia
-                value = parseInt(value, 10).toLocaleString('it-IT');
-            }
-            
-            // Aggiorna il valore dell'input
-            input.value = value;
-        }
+<div style="text-align: center; margin-top: 20px;">
+    <button id="calculateBtn" class="btn" style="width: 200px;">Calcola</button>
+</div>
+</div>
 
-        document.addEventListener('DOMContentLoaded', function() {
-            // Riferimenti agli elementi DOM
-            const targetSizeInput = document.getElementById('targetSize');
-            const campaignDaysInput = document.getElementById('campaignDays');
-            const budgetInput = document.getElementById('budget');
-            const cpmInput = document.getElementById('cpm');
-            const channelPotentialInput = document.getElementById('channelPotential');
-            const calculateBtn = document.getElementById('calculateBtn');
-            
-            const impressionsResult = document.getElementById('impressionsResult');
-            const grpResult = document.getElementById('grpResult');
-            const reachResult = document.getElementById('reachResult');
-            const reachPercentageResult = document.getElementById('reachPercentageResult');
-            const reachUsersPercentageResult = document.getElementById('reachUsersPercentageResult');
-            const frequencyResult = document.getElementById('frequencyResult');
-            const costPerReachResult = document.getElementById('costPerReachResult');
-            
-            const reachCurveCanvas = document.getElementById('reachCurveCanvas');
-            const loadingIndicator = document.getElementById('loading');
-            
-            // Configurazione dei canvas
-            function setupCanvas(canvas) {
-                // Imposta dimensioni canvas in base alle dimensioni del contenitore
-                const container = canvas.parentElement;
-                canvas.width = container.clientWidth;
-                canvas.height = container.clientHeight;
-                
-                // Adatta il canvas per schermi ad alta densità
-                const dpr = window.devicePixelRatio || 1;
-                canvas.width *= dpr;
-                canvas.height *= dpr;
-                canvas.style.width = `${container.clientWidth}px`;
-                canvas.style.height = `${container.clientHeight}px`;
-                
-                const ctx = canvas.getContext('2d');
-                ctx.scale(dpr, dpr);
-                return ctx;
-            }
-            
-            // Gestione del click sul pulsante Calcola
-            calculateBtn.addEventListener('click', function() {
-                // Mostra loading
-                loadingIndicator.style.display = 'block';
-                
-                // Esegui i calcoli in modo asincrono per non bloccare l'UI
-                setTimeout(calculateResults, 50);
-            });
-            
-            // Funzione per il calcolo dei risultati
-            function calculateResults() {
-                try {
-                    // Ottieni i valori di input
-                    const targetSizeStr = targetSizeInput.value.replace(/\./g, '');
-                    const targetSize = Math.max(1000, parseInt(targetSizeStr) || 0);
-                    const campaignDays = Math.max(1, Math.min(180, parseInt(campaignDaysInput.value) || 0));
-                    const budgetStr = budgetInput.value.replace(/\./g, '');
-                    const budget = Math.max(1000, parseInt(budgetStr) || 0);
-                    const cpm = Math.max(1, parseInt(cpmInput.value) || 0);
-                    const channelPotential = Math.max(1, Math.min(100, parseInt(channelPotentialInput.value) || 0));
-                    
-                    // Calcolo delle impressioni totali
-                    const totalImpressions = Math.floor(budget / (cpm / 1000));
-                    
-                    // Calcolo dei GRP
-                    const calculatedGrps = (totalImpressions / targetSize) * 100;
-                    
-                    // Parametri per il calcolo della reach
-                    const p = channelPotential;
-                    const g = calculatedGrps;
-                    
-                    // Formula della reach 1+ (percentuale del target) - Reach su devices
-                    const reach1Plus = (p * g) / (g + p);
-                    
-                    // Reach su users con fattore moltiplicatore 1.40 (considerando il pubblico one-to-many)
-                    const reachOnUsers = Math.min(reach1Plus * 1.40, 100); // Massimo 100%
-                    
-                    // Reach in valore assoluto
-                    const absoluteReach = Math.floor((reach1Plus / 100) * targetSize);
-                    
-                    // Calcolo della frequenza media (GRP / reach)
-                    const avgFrequency = g / reach1Plus;
-                    
-                    // Costo per reach point
-                    const costPerReach = budget / reach1Plus;
-                    
-                    // Aggiorna i risultati nell'interfaccia
-                    impressionsResult.textContent = formatNumber(totalImpressions);
-                    grpResult.textContent = formatPercentage(calculatedGrps);
-                    reachResult.textContent = formatNumber(absoluteReach);
-                    reachPercentageResult.textContent = formatPercentage(reach1Plus);
-                    reachUsersPercentageResult.textContent = formatPercentage(reachOnUsers);
-                    frequencyResult.textContent = avgFrequency.toFixed(2);
-                    costPerReachResult.textContent = `€${formatNumber(costPerReach)}`;
-                    
-                    // Disegna i grafici
-                    setTimeout(() => {
-                        drawReachCurve(p, g);
-                        // Nascondi loading
-                        loadingIndicator.style.display = 'none';
-                    }, 50);
-                } catch (error) {
-                    console.error('Errore durante il calcolo:', error);
-                    loadingIndicator.style.display = 'none';
-                    alert('Si è verificato un errore durante il calcolo. Controlla i valori inseriti.');
-                }
-            }
-            
-            // Funzione per disegnare la curva di reach
-            function drawReachCurve(p, g) {
-                const ctx = setupCanvas(reachCurveCanvas);
-                const width = reachCurveCanvas.width / window.devicePixelRatio;
-                const height = reachCurveCanvas.height / window.devicePixelRatio;
-                
-                // Cancella il canvas
-                ctx.clearRect(0, 0, width, height);
-                
-                // Definisci i margini
-                const margin = { top: 20, right: 30, bottom: 40, left: 50 };
-                const chartWidth = width - margin.left - margin.right;
-                const chartHeight = height - margin.top - margin.bottom;
-                
-                // Calcola il massimo GRP da visualizzare (1.5 volte il GRP attuale o almeno 1000)
-                const maxGrp = Math.max(1000, g * 1.5);
-                
-                // Funzione di scala per X (GRP)
-                function scaleX(value) {
-                    return margin.left + (value / maxGrp) * chartWidth;
-                }
-                
-                // Funzione di scala per Y (Reach %)
-                function scaleY(value) {
-                    return margin.top + chartHeight - (value / 100) * chartHeight;
-                }
-                
-                // Disegna gli assi
-                ctx.beginPath();
-                ctx.strokeStyle = '#d1d5db';
-                ctx.moveTo(margin.left, margin.top);
-                ctx.lineTo(margin.left, margin.top + chartHeight);
-                ctx.lineTo(margin.left + chartWidth, margin.top + chartHeight);
-                ctx.stroke();
-                
-                // Disegna le etichette degli assi
-                ctx.fillStyle = '#6b7280';
-                ctx.font = '12px sans-serif';
-                ctx.textAlign = 'center';
-                ctx.fillText('GRP', margin.left + chartWidth / 2, height - 10);
-                
-                ctx.save();
-                ctx.translate(15, margin.top + chartHeight / 2);
-                ctx.rotate(-Math.PI / 2);
-                ctx.textAlign = 'center';
-                ctx.fillText('Reach %', 0, 0);
-                ctx.restore();
-                
-                // Disegna le linee della griglia e i tick
-                ctx.beginPath();
-                ctx.strokeStyle = '#e5e7eb';
-                ctx.setLineDash([5, 5]);
-                
-                // Linee orizzontali e tick Y
-                for (let i = 0; i <= 10; i++) {
-                    const y = scaleY(i * 10);
-                    ctx.moveTo(margin.left, y);
-                    ctx.lineTo(margin.left + chartWidth, y);
-                    ctx.fillText(`${i * 10}%`, margin.left - 10, y + 5);
-                }
-                
-                // Linee verticali e tick X
-                for (let i = 0; i <= 10; i++) {
-                    const x = scaleX(maxGrp * i / 10);
-                    ctx.moveTo(x, margin.top + chartHeight);
-                    ctx.lineTo(x, margin.top);
-                    ctx.fillText(`${Math.round(maxGrp * i / 10)}`, x, margin.top + chartHeight + 15);
-                }
-                ctx.stroke();
-                ctx.setLineDash([]);
-                
-                // Disegna la curva di reach
-                ctx.beginPath();
-                ctx.strokeStyle = '#2563eb';
-                ctx.lineWidth = 2;
-                
-                const points = [];
-                const numPoints = 100;
-                
-                for (let i = 0; i < numPoints; i++) {
-                    const grpValue = (i / (numPoints - 1)) * maxGrp;
-                    const reachValue = (p * grpValue) / (grpValue + p);
-                    points.push({ x: scaleX(grpValue), y: scaleY(reachValue) });
-                }
-                
-                ctx.moveTo(points[0].x, points[0].y);
-                for (let i = 1; i < points.length; i++) {
-                    ctx.lineTo(points[i].x, points[i].y);
-                }
-                
-                ctx.stroke();
-                
-                // Disegna il punto che rappresenta la posizione attuale
-                const currentReach = (p * g) / (g + p);
-                const currentX = scaleX(g);
-                const currentY = scaleY(currentReach);
-                
-                ctx.beginPath();
-                ctx.fillStyle = '#ef4444';
-                ctx.arc(currentX, currentY, 6, 0, Math.PI * 2);
-                ctx.fill();
-                
-                // Aggiungi una legenda
-                const legendX = margin.left + 20;
-                const legendY = margin.top + 20;
-                
-                ctx.beginPath();
-                ctx.strokeStyle = '#2563eb';
-                ctx.lineWidth = 2;
-                ctx.moveTo(legendX, legendY);
-                ctx.lineTo(legendX + 30, legendY);
-                ctx.stroke();
-                
-                ctx.fillStyle = '#1f2937';
-                ctx.textAlign = 'left';
-                ctx.fillText('Reach (%)', legendX + 40, legendY + 4);
-                
-                ctx.beginPath();
-                ctx.fillStyle = '#ef4444';
-                ctx.arc(legendX + 15, legendY + 20, 4, 0, Math.PI * 2);
-                ctx.fill();
-                
-                ctx.fillStyle = '#1f2937';
-                ctx.fillText('Posizione attuale', legendX + 40, legendY + 24);
-            }
-            
-            // Funzione per disegnare la distribuzione di frequenza è stata rimossa
-            
-            // Funzioni di formattazione
-            function formatNumber(num) {
-                return new Intl.NumberFormat('it-IT').format(Math.floor(num));
-            }
-            
-            function formatPercentage(num) {
-                return num.toFixed(2) + '%';
-            }
-            
-            // Aggiornamento canvas al ridimensionamento della finestra
-            window.addEventListener('resize', debounce(function() {
-                if (impressionsResult.textContent !== '-') {
-                    const p = parseFloat(channelPotentialInput.value);
-                    const g = parseFloat(grpResult.textContent);
-                    drawReachCurve(p, g);
-                }
-            }, 250));
-            
-            // Semplice funzione debounce
-            function debounce(func, wait) {
-                let timeout;
-                return function() {
-                    const context = this;
-                    const args = arguments;
-                    clearTimeout(timeout);
-                    timeout = setTimeout(() => {
-                        func.apply(context, args);
-                    }, wait);
-                };
-            }
-        });
-    </script>
+<div class="card">
+<h2>Risultati Stimati</h2>
+<div class="grid">
+    <div class="result-box bg-primary-light">
+        <p class="text-primary">Impressioni Totali</p>
+        <p id="impressionsResult">-</p>
+    </div>
+    
+    <div class="result-box bg-primary-light">
+        <p class="text-primary">GRP</p>
+        <p id="grpResult">-</p>
+    </div>
+    
+    <div class="result-box bg-success-light">
+        <p class="text-success">Reach Stimata</p>
+        <p id="reachResult">-</p>
+    </div>
+    
+    <div class="result-box bg-success-light">
+        <p class="text-success">Reach (% on Devices)</p>
+        <p id="reachPercentageResult">-</p>
+    </div>
+    
+    <div class="result-box bg-success-light">
+        <p class="text-success">Reach (% on Users)</p>
+        <p id="reachUsersPercentageResult">-</p>
+    </div>
+    
+    <div class="result-box bg-warning-light">
+        <p class="text-warning">Frequenza Media</p>
+        <p id="frequencyResult">-</p>
+    </div>
+    
+    <div class="result-box bg-warning-light">
+        <p class="text-warning">Costo per Reach Point</p>
+        <p id="costPerReachResult">-</p>
+    </div>
+</div>
+</div>
+
+<div class="card">
+<h2>Curva di Reach</h2>
+<div class="canvas-container">
+    <canvas id="reachCurveCanvas"></canvas>
+</div>
+</div>
+
+
+<div class="card">
+<h2>Note sul Modello di Calcolo</h2>
+<p>Questo calcolatore utilizza le formule standard dell'anatomia delle curve di reach:</p>
+<ul class="list">
+    <li>Formula fondamentale della reach: r = (pg)/(g+p) dove r è la reach, p è il potenziale del canale e g sono i GRP</li>
+    <li>Reach a frequenza f o superiore: r_f = p * (g/(g+p))^f</li>
+    <li>Frequenza media: f = g/r</li>
+</ul>
+<p>Il parametro "Potenziale del Canale" rappresenta la massima percentuale del target che può essere raggiunta dal canale, anche con un numero infinito di GRP. È una caratteristica intrinseca del canale e della sua capacità di raggiungere il target.</p>
+<p>La "Reach (% on Users)" applica un fattore moltiplicatore di 1,40 alla Reach su device per riflettere la natura "one-to-many" dell'Advanced TV, considerando che davanti a un singolo schermo possono esserci più spettatori.</p>
+</div>
+</div>
+
+<!-- Loading spinner -->
+<div id="loading" class="loading">
+<div class="loading-content">
+<div class="spinner"></div>
+<p>Elaborazione in corso...</p>
+</div>
+</div>
+
+<script>
+// Funzione per formattare i numeri con i separatori delle migliaia
+function formatNumberInput(input) {
+// Rimuovi tutti i caratteri non numerici
+let value = input.value.replace(/\D/g, '');
+
+// Verifica che ci sia un valore
+if (value) {
+    // Formatta il numero con i separatori delle migliaia
+    value = parseInt(value, 10).toLocaleString('it-IT');
+}
+
+// Aggiorna il valore dell'input
+input.value = value;
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+// Riferimenti agli elementi DOM
+const targetSizeInput = document.getElementById('targetSize');
+const campaignDaysInput = document.getElementById('campaignDays');
+const budgetInput = document.getElementById('budget');
+const cpmInput = document.getElementById('cpm');
+const channelPotentialInput = document.getElementById('channelPotential');
+const calculateBtn = document.getElementById('calculateBtn');
+
+const impressionsResult = document.getElementById('impressionsResult');
+const grpResult = document.getElementById('grpResult');
+const reachResult = document.getElementById('reachResult');
+const reachPercentageResult = document.getElementById('reachPercentageResult');
+const reachUsersPercentageResult = document.getElementById('reachUsersPercentageResult');
+const frequencyResult = document.getElementById('frequencyResult');
+const costPerReachResult = document.getElementById('costPerReachResult');
+
+const reachCurveCanvas = document.getElementById('reachCurveCanvas');
+const loadingIndicator = document.getElementById('loading');
+
+// Configurazione dei canvas
+function setupCanvas(canvas) {
+    // Imposta dimensioni canvas in base alle dimensioni del contenitore
+    const container = canvas.parentElement;
+    canvas.width = container.clientWidth;
+    canvas.height = container.clientHeight;
+    
+    // Adatta il canvas per schermi ad alta densità
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width *= dpr;
+    canvas.height *= dpr;
+    canvas.style.width = `${container.clientWidth}px`;
+    canvas.style.height = `${container.clientHeight}px`;
+    
+    const ctx = canvas.getContext('2d');
+    ctx.scale(dpr, dpr);
+    return ctx;
+}
+
+// Gestione del click sul pulsante Calcola
+calculateBtn.addEventListener('click', function() {
+    // Mostra loading
+    loadingIndicator.style.display = 'block';
+    
+    // Esegui i calcoli in modo asincrono per non bloccare l'UI
+    setTimeout(calculateResults, 50);
+});
+
+// Funzione per il calcolo dei risultati
+function calculateResults() {
+    try {
+        // Ottieni i valori di input
+        const targetSizeStr = targetSizeInput.value.replace(/\./g, '');
+        const targetSize = Math.max(1000, parseInt(targetSizeStr) || 0);
+        const campaignDays = Math.max(1, Math.min(180, parseInt(campaignDaysInput.value) || 0));
+        const budgetStr = budgetInput.value.replace(/\./g, '');
+        const budget = Math.max(1000, parseInt(budgetStr) || 0);
+        const cpm = Math.max(1, parseInt(cpmInput.value) || 0);
+        const channelPotential = Math.max(1, Math.min(100, parseInt(channelPotentialInput.value) || 0));
+        
+        // Calcolo delle impressioni totali
+        const totalImpressions = Math.floor(budget / (cpm / 1000));
+        
+        // Calcolo dei GRP
+        const calculatedGrps = (totalImpressions / targetSize) * 100;
+        
+        // Parametri per il calcolo della reach
+        const p = channelPotential;
+        const g = calculatedGrps;
+        
+        // Formula della reach 1+ (percentuale del target) - Reach su devices
+        const reach1Plus = (p * g) / (g + p);
+        
+        // Reach su users con fattore moltiplicatore 1.40 (considerando il pubblico one-to-many)
+        const reachOnUsers = Math.min(reach1Plus * 1.40, 100); // Massimo 100%
+        
+        // Reach in valore assoluto
+        const absoluteReach = Math.floor((reach1Plus / 100) * targetSize);
+        
+        // Calcolo della frequenza media (GRP / reach)
+        const avgFrequency = g / reach1Plus;
+        
+        // Costo per reach point
+        const costPerReach = budget / reach1Plus;
+        
+        // Aggiorna i risultati nell'interfaccia
+        impressionsResult.textContent = formatNumber(totalImpressions);
+        grpResult.textContent = formatPercentage(calculatedGrps);
+        reachResult.textContent = formatNumber(absoluteReach);
+        reachPercentageResult.textContent = formatPercentage(reach1Plus);
+        reachUsersPercentageResult.textContent = formatPercentage(reachOnUsers);
+        frequencyResult.textContent = avgFrequency.toFixed(2);
+        costPerReachResult.textContent = `€${formatNumber(costPerReach)}`;
+        
+        // Disegna i grafici
+        setTimeout(() => {
+            drawReachCurve(p, g);
+            // Nascondi loading
+            loadingIndicator.style.display = 'none';
+        }, 50);
+    } catch (error) {
+        console.error('Errore durante il calcolo:', error);
+        loadingIndicator.style.display = 'none';
+        alert('Si è verificato un errore durante il calcolo. Controlla i valori inseriti.');
+    }
+}
+
+// Funzione per disegnare la curva di reach
+function drawReachCurve(p, g) {
+    const ctx = setupCanvas(reachCurveCanvas);
+    const width = reachCurveCanvas.width / window.devicePixelRatio;
+    const height = reachCurveCanvas.height / window.devicePixelRatio;
+    
+    // Cancella il canvas
+    ctx.clearRect(0, 0, width, height);
+    
+    // Definisci i margini
+    const margin = { top: 20, right: 30, bottom: 40, left: 50 };
+    const chartWidth = width - margin.left - margin.right;
+    const chartHeight = height - margin.top - margin.bottom;
+    
+    // Calcola il massimo GRP da visualizzare (1.5 volte il GRP attuale o almeno 1000)
+    const maxGrp = Math.max(1000, g * 1.5);
+    
+    // Funzione di scala per X (GRP)
+    function scaleX(value) {
+        return margin.left + (value / maxGrp) * chartWidth;
+    }
+    
+    // Funzione di scala per Y (Reach %)
+    function scaleY(value) {
+        return margin.top + chartHeight - (value / 100) * chartHeight;
+    }
+    
+    // Disegna gli assi
+    ctx.beginPath();
+    ctx.strokeStyle = '#d1d5db';
+    ctx.moveTo(margin.left, margin.top);
+    ctx.lineTo(margin.left, margin.top + chartHeight);
+    ctx.lineTo(margin.left + chartWidth, margin.top + chartHeight);
+    ctx.stroke();
+    
+    // Disegna le etichette degli assi
+    ctx.fillStyle = '#6b7280';
+    ctx.font = '12px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('GRP', margin.left + chartWidth / 2, height - 10);
+    
+    ctx.save();
+    ctx.translate(15, margin.top + chartHeight / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.textAlign = 'center';
+    ctx.fillText('Reach %', 0, 0);
+    ctx.restore();
+    
+    // Disegna le linee della griglia e i tick
+    ctx.beginPath();
+    ctx.strokeStyle = '#e5e7eb';
+    ctx.setLineDash([5, 5]);
+    
+    // Linee orizzontali e tick Y
+    for (let i = 0; i <= 10; i++) {
+        const y = scaleY(i * 10);
+        ctx.moveTo(margin.left, y);
+        ctx.lineTo(margin.left + chartWidth, y);
+        ctx.fillText(`${i * 10}%`, margin.left - 10, y + 5);
+    }
+    
+    // Linee verticali e tick X
+    for (let i = 0; i <= 10; i++) {
+        const x = scaleX(maxGrp * i / 10);
+        ctx.moveTo(x, margin.top + chartHeight);
+        ctx.lineTo(x, margin.top);
+        ctx.fillText(`${Math.round(maxGrp * i / 10)}`, x, margin.top + chartHeight + 15);
+    }
+    ctx.stroke();
+    ctx.setLineDash([]);
+    
+    // Disegna la curva di reach
+    ctx.beginPath();
+    ctx.strokeStyle = '#2563eb';
+    ctx.lineWidth = 2;
+    
+    const points = [];
+    const numPoints = 100;
+    
+    for (let i = 0; i < numPoints; i++) {
+        const grpValue = (i / (numPoints - 1)) * maxGrp;
+        const reachValue = (p * grpValue) / (grpValue + p);
+        points.push({ x: scaleX(grpValue), y: scaleY(reachValue) });
+    }
+    
+    ctx.moveTo(points[0].x, points[0].y);
+    for (let i = 1; i < points.length; i++) {
+        ctx.lineTo(points[i].x, points[i].y);
+    }
+    
+    ctx.stroke();
+    
+    // Disegna il punto che rappresenta la posizione attuale
+    const currentReach = (p * g) / (g + p);
+    const currentX = scaleX(g);
+    const currentY = scaleY(currentReach);
+    
+    ctx.beginPath();
+    ctx.fillStyle = '#ef4444';
+    ctx.arc(currentX, currentY, 6, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Aggiungi una legenda
+    const legendX = margin.left + 20;
+    const legendY = margin.top + 20;
+    
+    ctx.beginPath();
+    ctx.strokeStyle = '#2563eb';
+    ctx.lineWidth = 2;
+    ctx.moveTo(legendX, legendY);
+    ctx.lineTo(legendX + 30, legendY);
+    ctx.stroke();
+    
+    ctx.fillStyle = '#1f2937';
+    ctx.textAlign = 'left';
+    ctx.fillText('Reach (%)', legendX + 40, legendY + 4);
+    
+    ctx.beginPath();
+    ctx.fillStyle = '#ef4444';
+    ctx.arc(legendX + 15, legendY + 20, 4, 0, Math.PI * 2);
+    ctx.fill();
+    
+    ctx.fillStyle = '#1f2937';
+    ctx.fillText('Posizione attuale', legendX + 40, legendY + 24);
+}
+
+// Funzione per disegnare la distribuzione di frequenza è stata rimossa
+
+// Funzioni di formattazione
+function formatNumber(num) {
+    return new Intl.NumberFormat('it-IT').format(Math.floor(num));
+}
+
+function formatPercentage(num) {
+    return num.toFixed(2) + '%';
+}
+
+// Aggiornamento canvas al ridimensionamento della finestra
+window.addEventListener('resize', debounce(function() {
+    if (impressionsResult.textContent !== '-') {
+        const p = parseFloat(channelPotentialInput.value);
+        const g = parseFloat(grpResult.textContent);
+        drawReachCurve(p, g);
+    }
+}, 250));
+
+// Semplice funzione debounce
+function debounce(func, wait) {
+    let timeout;
+    return function() {
+        const context = this;
+        const args = arguments;
+        clearTimeout(timeout);
+        timeout = setTimeout(() => {
+            func.apply(context, args);
+        }, wait);
+    };
+}
+});
+</script>
 </body>
 </html>
