@@ -1,4 +1,6 @@
-<!DOCTYPE html>
+// Inizializza gli input formattati
+            formatNumberInput(targetSizeInput);
+            formatNumberInput(budgetInput);<!DOCTYPE html>
 <html lang="it">
 <head>
     <meta charset="UTF-8">
@@ -206,17 +208,17 @@
             <div class="grid">
                 <div class="form-group">
                     <label for="targetSize">Dimensione Target (persone)</label>
-                    <input type="number" id="targetSize" min="1000" value="1000000">
+                    <input type="text" id="targetSize" value="1.000.000" oninput="formatNumberInput(this)">
                 </div>
                 
-                <div class="form-group">
+                <div class="form-group" style="display: none;">
                     <label for="campaignDays">Durata Campagna (giorni)</label>
                     <input type="number" id="campaignDays" min="1" max="180" value="30">
                 </div>
                 
                 <div class="form-group">
                     <label for="budget">Budget (€)</label>
-                    <input type="number" id="budget" min="1000" value="50000">
+                    <input type="text" id="budget" value="50.000" oninput="formatNumberInput(this)">
                 </div>
                 
                 <div class="form-group">
@@ -224,15 +226,15 @@
                     <input type="number" id="cpm" min="1" value="25">
                 </div>
                 
-                <div class="form-group">
+                <div class="form-group" style="display: none;">
                     <label for="channelPotential">Potenziale del Canale (%)</label>
                     <input type="number" id="channelPotential" min="1" max="100" value="80">
                     <p class="help-text">Percentuale massima del target raggiungibile</p>
                 </div>
-                
-                <div class="form-group">
-                    <button id="calculateBtn" class="btn btn-block">Calcola</button>
-                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 20px;">
+                <button id="calculateBtn" class="btn" style="width: 200px;">Calcola</button>
             </div>
         </div>
         
@@ -306,6 +308,21 @@
     </div>
 
     <script>
+        // Funzione per formattare i numeri con i separatori delle migliaia
+        function formatNumberInput(input) {
+            // Rimuovi tutti i caratteri non numerici
+            let value = input.value.replace(/\D/g, '');
+            
+            // Verifica che ci sia un valore
+            if (value) {
+                // Formatta il numero con i separatori delle migliaia
+                value = parseInt(value, 10).toLocaleString('it-IT');
+            }
+            
+            // Aggiorna il valore dell'input
+            input.value = value;
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             // Riferimenti agli elementi DOM
             const targetSizeInput = document.getElementById('targetSize');
@@ -358,9 +375,11 @@
             function calculateResults() {
                 try {
                     // Ottieni i valori di input
-                    const targetSize = Math.max(1000, parseInt(targetSizeInput.value) || 0);
+                    const targetSizeStr = targetSizeInput.value.replace(/\./g, '');
+                    const targetSize = Math.max(1000, parseInt(targetSizeStr) || 0);
                     const campaignDays = Math.max(1, Math.min(180, parseInt(campaignDaysInput.value) || 0));
-                    const budget = Math.max(1000, parseInt(budgetInput.value) || 0);
+                    const budgetStr = budgetInput.value.replace(/\./g, '');
+                    const budget = Math.max(1000, parseInt(budgetStr) || 0);
                     const cpm = Math.max(1, parseInt(cpmInput.value) || 0);
                     const channelPotential = Math.max(1, Math.min(100, parseInt(channelPotentialInput.value) || 0));
                     
